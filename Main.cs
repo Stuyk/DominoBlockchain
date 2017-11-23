@@ -63,26 +63,41 @@ namespace Domino
 
             Verification.VerifyAllPreviousBlocks();
 
-            
+
             // SANDBOX
-            
+            /*
             for (var i = 0; i < 10; i++)
             {
                 Transaction tempTransaction = new Transaction()
                 {
                     Value = new Random().Next(1, 25000),
-                    FromAddress = EasyEncryption.SHA.ComputeSHA256Hash(WordList.GetWord()),
-                    TargetAddress = EasyEncryption.SHA.ComputeSHA256Hash(WordList.GetWord())
+                    FromAddress = EasyEncryption.SHA.ComputeSHA256Hash(WordList.GetWordRepeatable()),
+                    TargetAddress = EasyEncryption.SHA.ComputeSHA256Hash("StuykGaming")
                 };
 
                 DataHandler.CreateNewBlockAddToChain(tempTransaction);
             }
+            */
 
-            API.delay(15000, true, () =>
+            /*
+            for (var i = 0; i < 5000; i++)
             {
-                Console.WriteLine(Verification.VerifyAllPreviousBlocks());
-            });
+                Transaction tempTransaction = new Transaction()
+                {
+                    Value = new Random(i * i).Next(1, 25000),
+                    FromAddress = EasyEncryption.SHA.ComputeSHA256Hash(WordList.GetWordRepeatable()),
+                    TargetAddress = EasyEncryption.SHA.ComputeSHA256Hash(WordList.GetWordRepeatable())
+                };
+
+                DataHandler.CreateNewBlockAddToChain(tempTransaction);
+            }
+            */
             
+
+            Verification.VerifyAllPreviousBlocks();
+
+            Console.WriteLine($"Value: {DataHandler.GetAllRecievedTransactions("StuykGaming")}");
+
         }
 
         /// <summary>

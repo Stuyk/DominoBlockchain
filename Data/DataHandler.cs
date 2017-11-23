@@ -61,6 +61,37 @@ namespace Domino.Data
             Main.Blocks = blocks;
 
             FileDoneWriting = true;
+            Console.WriteLine("[DOMINO] Added Transaction");
+        }
+
+        public static long GetAllSentTransactions(string address)
+        {
+            long recievedTotal = 0;
+
+            foreach (Block blck in Main.Blocks)
+            {
+                if (blck.DeserializedTransaction.FromAddress == EasyEncryption.SHA.ComputeSHA256Hash(address))
+                {
+                    recievedTotal += blck.DeserializedTransaction.Value;
+                }
+            }
+
+            return recievedTotal;
+        }
+
+        public static long GetAllRecievedTransactions(string address)
+        {
+            long recievedTotal = 0;
+
+            foreach (Block blck in Main.Blocks)
+            {
+                if (blck.DeserializedTransaction.TargetAddress == EasyEncryption.SHA.ComputeSHA256Hash(address))
+                {
+                    recievedTotal += blck.DeserializedTransaction.Value;
+                }
+            }
+
+            return recievedTotal;
         }
     }
 }
