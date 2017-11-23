@@ -1,0 +1,17 @@
+C:\Users\Vape\Documents\Visual Studio 2017\Projects\resources\Domino\obj\Debug\Domino.Properties.Resources.resources
+C:\Users\Vape\Documents\Visual Studio 2017\Projects\resources\Domino\obj\Debug\Domino.csproj.GenerateResource.Cache
+C:\Users\Vape\Documents\Visual Studio 2017\Projects\resources\Domino\obj\Debug\Domino.csproj.CoreCompileInputs.cache
+C:\Users\Vape\Documents\Visual Studio 2017\Projects\resources\Domino\obj\Debug\Domino.dll
+C:\Users\Vape\Documents\Visual Studio 2017\Projects\resources\Domino\obj\Debug\Domino.pdb
+C:\Users\Vape\Documents\Visual Studio 2017\Projects\resources\Domino\Domino.dll
+C:\Users\Vape\Documents\Visual Studio 2017\Projects\resources\Domino\Domino.pdb
+C:\Users\Vape\Documents\Visual Studio 2017\Projects\resources\Domino\BCrypt.Net.dll
+C:\Users\Vape\Documents\Visual Studio 2017\Projects\resources\Domino\EasyEncryption.dll
+C:\Users\Vape\Documents\Visual Studio 2017\Projects\resources\Domino\GrandTheftMultiplayer.Server.exe
+C:\Users\Vape\Documents\Visual Studio 2017\Projects\resources\Domino\GrandTheftMultiplayer.Shared.dll
+C:\Users\Vape\Documents\Visual Studio 2017\Projects\resources\Domino\Newtonsoft.Json.dll
+C:\Users\Vape\Documents\Visual Studio 2017\Projects\resources\Domino\NLog.dll
+C:\Users\Vape\Documents\Visual Studio 2017\Projects\resources\Domino\BCrypt.Net.pdb
+C:\Users\Vape\Documents\Visual Studio 2017\Projects\resources\Domino\BCrypt.Net.xml
+C:\Users\Vape\Documents\Visual Studio 2017\Projects\resources\Domino\Newtonsoft.Json.xml
+C:\Users\Vape\Documents\Visual Studio 2017\Projects\resources\Domino\NLog.xml

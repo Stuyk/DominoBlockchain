@@ -1,0 +1,5 @@
+<meta>
+  <info name="Domino" description="A blockchain registration / login system." author="Stuyk" version="1.0" shadowcopy="true" />
+	<script src="Domino.dll" type="server" lang="compiled" />
+  <assembly ref="EasyEncryption.dll" />
+</meta>
