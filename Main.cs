@@ -27,42 +27,21 @@ namespace Domino
         /// </summary>
         public static string filePath = $"{directoryPath}/transactions.txt";
         /// <summary>
-        /// The time since we last ran the onUpdate Function.
-        /// </summary>
-        public static DateTime lastTimeSpan;
-        /// <summary>
         /// The maximum transactions allowed before a new block is generated.
         /// </summary>
         public static int MaxTransactionsPerBlock = 25;
+        /// <summary>
+        /// Block Reward
+        /// </summary>
+        public static int BlockReward = 1;
+        /// <summary>
+        /// Max Printed Cash Available
+        /// </summary>
+        public static int MaxCoinCount = 25;
 
         public Main()
         {
             API.onResourceStart += API_StartupResource;
-            API.onUpdate += API_UpdateQueuedBlocks;
-        }
-
-        [Command("MineBlock")]
-        public void cmdMineBlock(Client player)
-        {
-            DataHandler.MineCurrentBlock();
-            API.sendChatMessageToPlayer(player, "Mining Block....");
-        }
-
-        // Writes new blocks to the file.
-        private void API_UpdateQueuedBlocks()
-        {
-            // Update every 5 seconds.
-            if (lastTimeSpan.AddSeconds(5) > DateTime.UtcNow)
-                return;
-
-            // Set last timeSpawn to the new time.
-            lastTimeSpan = DateTime.UtcNow;
-
-            // If the CurrentBlock is null, setup a new block.
-            if (DataHandler.CurrentBlock == null)
-                DataHandler.GenerateNewBlock();
-
-            API.consoleOutput($"{Domino} Queue'd Blocks: {DataHandler.Queue.Count}");
         }
 
         /// <summary>
@@ -84,22 +63,6 @@ namespace Domino
             }
             
             DataHandler.LoadAllBlocks();
-
-            lastTimeSpan = DateTime.UtcNow;
-
-            API.delay(7000, true, () =>
-            {
-                for (var i = 0; i < 500; i++)
-                {
-                    DataHandler.CreateNewTransaction(new Transaction()
-                    {
-                        FromAddress = "Test",
-                        TargetAddress = "Whatever",
-                        Value = 600
-                    });
-                }
-            });
-            
         }
 
         /// <summary>
@@ -108,12 +71,6 @@ namespace Domino
         private void generateGenesisBlock()
         {
             API.consoleOutput($"{Domino} Creating genesis block...");
-            Transaction tempTransaction = new Transaction()
-            {
-                Value = 10,
-                FromAddress = EasyEncryption.SHA.ComputeSHA256Hash(WordList.GetWord()),
-                TargetAddress = EasyEncryption.SHA.ComputeSHA256Hash(WordList.GetWord())
-            };
 
             Block genesisBlock = new Block();
             genesisBlock.PreviousHash = EasyEncryption.SHA.ComputeSHA256Hash("Domino");

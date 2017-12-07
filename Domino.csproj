@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\Block.cs" />
+    <Compile Include="Data\Commands.cs" />
     <Compile Include="Data\DataHandler.cs" />
     <Compile Include="Data\Transaction.cs" />
     <Compile Include="Data\Verification.cs" />
