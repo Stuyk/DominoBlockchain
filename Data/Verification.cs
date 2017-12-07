@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GrandTheftMultiplayer.Server.API;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,25 +11,30 @@ namespace Domino.Data
     {
         public static bool VerifyAllPreviousBlocks()
         {
+            API.shared.consoleOutput($"{Main.Domino} Verifying all previous blocks...");
             string previousHash = null;
 
-            for (int i = 0; i < Main.Blocks.Length; i++)
+            for (int i = 0; i < DataHandler.Blocks.Length; i++)
             {
                 if (previousHash == null)
                 {
-                    previousHash = Main.Blocks[0].PreviousHash;
+                    previousHash = DataHandler.Blocks[0].PreviousHash;
                 }
 
-                if (Main.Blocks[i].PreviousHash != previousHash)
+                if (DataHandler.Blocks[i].PreviousHash != previousHash)
                 {
-                    Console.WriteLine("[DOMINO] Database failed to verify.");
+                    API.shared.consoleOutput($"{Main.Domino} The database failed to verify, stopping server in 5 seconds.");
+                    API.shared.delay(5000, true, () =>
+                    {
+                        API.shared.stopServer();
+                    });
                     return false;
                 }
                     
-                previousHash = Main.Blocks[i].BlockHash;
+                previousHash = DataHandler.Blocks[i].BlockHash;
             }
 
-            Console.WriteLine("[DOMINO] Database verified successfully.");
+            API.shared.consoleOutput($"{Main.Domino} The database has verified successfully.");
             return true;
         }
     }

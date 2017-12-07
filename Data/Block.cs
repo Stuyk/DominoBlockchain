@@ -12,8 +12,8 @@ namespace Domino.Data
         [JsonProperty("PreviousHash")]
         public string PreviousHash { get; set; }
 
-        [JsonProperty("DeserializedTransaction")]
-        public Transaction DeserializedTransaction { get; set; }
+        [JsonProperty("Transactions")]
+        public List<Transaction> Transactions { get; set; }
 
         [JsonProperty("BlockHash")]
         public string BlockHash { get; set; }

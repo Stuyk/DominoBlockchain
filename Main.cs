@@ -1,6 +1,7 @@
 ﻿using Domino.Data;
 using GrandTheftMultiplayer.Server.API;
 using GrandTheftMultiplayer.Server.Elements;
+using GrandTheftMultiplayer.Server.Managers;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -13,91 +14,92 @@ namespace Domino
 {
     public class Main : Script
     {
-        public static Queue<Block> Queue = new Queue<Block>();
-        // A list of all the blocks.
-        public static Block[] Blocks { get; set; }
-        // Directory for Storage
+        /// <summary>
+        /// Console Output String
+        /// </summary>
+        public static string Domino = "Domino ->";
+        /// <summary>
+        /// Storage Directory
+        /// </summary>
         public static string directoryPath = "resources/Domino/Transactions";
+        /// <summary>
+        /// File Directory + Name
+        /// </summary>
         public static string filePath = $"{directoryPath}/transactions.txt";
+        /// <summary>
+        /// The time since we last ran the onUpdate Function.
+        /// </summary>
+        public static DateTime lastTimeSpan;
+        /// <summary>
+        /// The maximum transactions allowed before a new block is generated.
+        /// </summary>
+        public static int MaxTransactionsPerBlock = 25;
 
         public Main()
         {
-            API.onResourceStart += API_onResourceStart;
-            API.onUpdate += UpdateQueuedBlocks;
+            API.onResourceStart += API_StartupResource;
+            API.onUpdate += API_UpdateQueuedBlocks;
         }
 
-        private void UpdateQueuedBlocks()
+        [Command("MineBlock")]
+        public void cmdMineBlock(Client player)
         {
-            if (Queue.Count > 0)
-            {
-                if (DataHandler.FileDoneWriting)
-                {
-                    DataHandler.FileDoneWriting = false;
-                    DataHandler.WriteBlock(Queue.Dequeue());
-                }
-            }
+            DataHandler.MineCurrentBlock();
+            API.sendChatMessageToPlayer(player, "Mining Block....");
         }
 
-        private void API_onResourceStart()
+        // Writes new blocks to the file.
+        private void API_UpdateQueuedBlocks()
         {
-            startupProcess();
+            // Update every 5 seconds.
+            if (lastTimeSpan.AddSeconds(5) > DateTime.UtcNow)
+                return;
+
+            // Set last timeSpawn to the new time.
+            lastTimeSpan = DateTime.UtcNow;
+
+            // If the CurrentBlock is null, setup a new block.
+            if (DataHandler.CurrentBlock == null)
+                DataHandler.GenerateNewBlock();
+
+            API.consoleOutput($"{Domino} Queue'd Blocks: {DataHandler.Queue.Count}");
         }
 
         /// <summary>
         /// Checks if the directory / file exists. If not it creates it.
         /// </summary>
-        private void startupProcess()
+        private void API_StartupResource()
         {
+            API.consoleOutput($"{Domino} Starting resource...");
             if (!Directory.Exists(directoryPath))
             {
+                API.consoleOutput($"{Domino} Creating directory...");
                 Directory.CreateDirectory(directoryPath);
             }
 
             if (!File.Exists(filePath))
             {
+                API.consoleOutput($"{Domino} Creating genesis block...");
                 generateGenesisBlock();
             }
             
             DataHandler.LoadAllBlocks();
-            Console.WriteLine("[DOMINO] Loaded All Blocks");
 
-            Verification.VerifyAllPreviousBlocks();
+            lastTimeSpan = DateTime.UtcNow;
 
-
-            // SANDBOX
-            /*
-            for (var i = 0; i < 10; i++)
+            API.delay(7000, true, () =>
             {
-                Transaction tempTransaction = new Transaction()
+                for (var i = 0; i < 500; i++)
                 {
-                    Value = new Random().Next(1, 25000),
-                    FromAddress = EasyEncryption.SHA.ComputeSHA256Hash(WordList.GetWordRepeatable()),
-                    TargetAddress = EasyEncryption.SHA.ComputeSHA256Hash("StuykGaming")
-                };
-
-                DataHandler.CreateNewBlockAddToChain(tempTransaction);
-            }
-            */
-
-            /*
-            for (var i = 0; i < 5000; i++)
-            {
-                Transaction tempTransaction = new Transaction()
-                {
-                    Value = new Random(i * i).Next(1, 25000),
-                    FromAddress = EasyEncryption.SHA.ComputeSHA256Hash(WordList.GetWordRepeatable()),
-                    TargetAddress = EasyEncryption.SHA.ComputeSHA256Hash(WordList.GetWordRepeatable())
-                };
-
-                DataHandler.CreateNewBlockAddToChain(tempTransaction);
-            }
-            */
+                    DataHandler.CreateNewTransaction(new Transaction()
+                    {
+                        FromAddress = "Test",
+                        TargetAddress = "Whatever",
+                        Value = 600
+                    });
+                }
+            });
             
-
-            Verification.VerifyAllPreviousBlocks();
-
-            Console.WriteLine($"Value: {DataHandler.GetAllRecievedTransactions("StuykGaming")}");
-
         }
 
         /// <summary>
@@ -105,7 +107,7 @@ namespace Domino
         /// </summary>
         private void generateGenesisBlock()
         {
-            Console.WriteLine("[DOMINO] Genesis Block Created");
+            API.consoleOutput($"{Domino} Creating genesis block...");
             Transaction tempTransaction = new Transaction()
             {
                 Value = 10,
@@ -113,17 +115,23 @@ namespace Domino
                 TargetAddress = EasyEncryption.SHA.ComputeSHA256Hash(WordList.GetWord())
             };
 
-            DataHandler.WriteBlock(new Block()
+            Block genesisBlock = new Block();
+            genesisBlock.PreviousHash = EasyEncryption.SHA.ComputeSHA256Hash("Domino");
+            genesisBlock.BlockHash = EasyEncryption.SHA.ComputeSHA256Hash("BlockChain");
+            genesisBlock.Transactions = new List<Transaction>();
+
+            Transaction newTransaction = new Transaction()
             {
-                PreviousHash = EasyEncryption.SHA.ComputeSHA256Hash("Domino"),
-                BlockHash = EasyEncryption.SHA.ComputeSHA256Hash("BlockChain"),
-                DeserializedTransaction = new Transaction()
-                {
-                    Value = 0,
-                    FromAddress = EasyEncryption.SHA.ComputeSHA256Hash("Created By"),
-                    TargetAddress = EasyEncryption.SHA.ComputeSHA256Hash("Stuyk")
-                }
-            });
+                Value = 0,
+                FromAddress = EasyEncryption.SHA.ComputeSHA256Hash("Created By"),
+                TargetAddress = EasyEncryption.SHA.ComputeSHA256Hash("Stuyk")
+            };
+
+            genesisBlock.Transactions.Add(newTransaction);
+
+            DataHandler.WriteBlock(genesisBlock);
+            
+            API.consoleOutput($"{Domino} Genesis block created.");
         }
     }
 }
